@@ -1,8 +1,16 @@
 import pandas as pd
 from sqlalchemy import create_engine
 
+year = 2021
+month = 1
+pg_user = "root"
+pg_pass = "root"
+pg_host = "localhost"
+pg_db = "ny_taxi"
+pg_port = 5432
+
 prefix = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/"
-url = f"{prefix}yellow_tripdata_2021-01.csv.gz"
+url = f"{prefix}yellow_tripdata_{year}-{month}.csv.gz"
 
 
 dtype = {
@@ -37,12 +45,11 @@ df = pd.read_csv(
 )
 
 
-SQLALCHEMY_DB_URL = "postgresql://root:root@localhost:5432/ny_taxi"
+SQLALCHEMY_DB_URL = f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}"
 
 engine = create_engine(SQLALCHEMY_DB_URL)
 
 df.head(0).to_sql(name="yellow_taxi_data", con=engine, if_exists="replace")
-
 
 pd.io.sql.get_schema(df, name="yellow_taxi_data", con=engine)
 
