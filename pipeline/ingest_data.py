@@ -3,11 +3,14 @@ from sqlalchemy import create_engine
 
 year = 2021
 month = 1
+
 pg_user = "root"
 pg_pass = "root"
 pg_host = "localhost"
 pg_db = "ny_taxi"
 pg_port = 5432
+
+chunk_size = 10000
 
 prefix = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/"
 url = f"{prefix}yellow_tripdata_{year}-{month}.csv.gz"
