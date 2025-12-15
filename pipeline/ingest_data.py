@@ -3,7 +3,6 @@ from sqlalchemy import create_engine
 
 def run():
     year = 2021
-    month = 1
 
     pg_user = "root"
     pg_pass = "root"
@@ -14,7 +13,7 @@ def run():
     chunk_size = 10000
 
     prefix = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/"
-    url = f"{prefix}yellow_tripdata_{year}-{month}.csv.gz"
+    url = f"{prefix}yellow_tripdata_{year}-01.csv.gz"
 
 
     dtype = {
@@ -50,10 +49,8 @@ def run():
         dtype=dtype,
         parse_dates=parse_dates,
         iterator=True,
-        chunksize=10000
+        chunksize=chunk_size
     )
-
-    pd.io.sql.get_schema(df_iter, name="yellow_taxi_data", con=engine)
 
     first = True
     for df_chunk in df_iter:
@@ -69,3 +66,5 @@ def run():
                         con=engine,
                         if_exists="append")
 
+if __name__ == "__main__":
+    run()
