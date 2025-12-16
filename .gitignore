@@ -1,5 +1,9 @@
 *.parquet
+
 *.bash
+
 .venv/
+
 test/
+
 pipeline/pipeline.py
