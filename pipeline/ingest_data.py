@@ -1,19 +1,22 @@
 import pandas as pd
 from sqlalchemy import create_engine
+import click
 
-def run():
-    year = 2021
+@click.command()
+@click.option('--pg-user', default='root', help='PostgreSQL username')
+@click.option('--pg-pass', default='root', help='PostgreSQL password')
+@click.option('--pg-host', default='localhost', help='PostgreSQL host')
+@click.option('--pg-port', default='5432', help='PostgreSQL port')
+@click.option('--pg-db', default='ny_taxi', help='PostgreSQL database name')
+@click.option('--year', default=2021, type=int, help='Year of the data')
+@click.option('--month', default="01", help='Month of the data')
+@click.option('--chunksize', default=100000, type=int, help='Chunk size for ingestion')
+@click.option('--target-table', default='yellow_taxi_data', help='Target table name')
 
-    pg_user = "root"
-    pg_pass = "root"
-    pg_host = "localhost"
-    pg_db = "ny_taxi"
-    pg_port = 5432
-
-    chunk_size = 10000
+def run(pg_user, pg_pass, pg_host, pg_port, pg_db, year, month, chunksize, target_table):
 
     prefix = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/"
-    url = f"{prefix}yellow_tripdata_{year}-01.csv.gz"
+    url = f"{prefix}yellow_tripdata_{year}-{month}.csv.gz"
 
 
     dtype = {
@@ -49,22 +52,25 @@ def run():
         dtype=dtype,
         parse_dates=parse_dates,
         iterator=True,
-        chunksize=chunk_size
+        chunksize=chunksize
     )
-
+    rows_processed = 0
     first = True
     for df_chunk in df_iter:
         if first:
             df_chunk.head(0).to_sql(
-                name="yellow_taxi_data", 
+                name=target_table, 
                 con=engine, 
                 if_exists="replace")
             
             first = False
 
-        df_chunk.to_sql(name="yellow_taxi_data",
+        df_chunk.to_sql(name=target_table,
                         con=engine,
                         if_exists="append")
+        
+        rows_processed += len(df_chunk)
+        print(f"Rows procesed: {rows_processed}")
 
 if __name__ == "__main__":
     run()

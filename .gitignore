@@ -1,2 +1,2 @@
 *.parquet
-pg.bash
+*.bash
