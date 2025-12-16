@@ -1,3 +1,13 @@
-*.parquet
-*.bash
-.venv/
+
+# Ignore everything at repository root except the pipeline folder, README and this .gitignore
+/*
+!.gitignore
+!/README.md
+!/pipeline/
+!/pipeline/**
+
+# Hide the pipeline runner (keep only ingest_data.py visible)
+/pipeline/pipeline.py
+
+# Ignore test folder completely
+/test/
