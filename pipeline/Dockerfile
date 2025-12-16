@@ -10,6 +10,6 @@ COPY pyproject.toml poetry.lock ./
 
 RUN poetry install --no-interaction --no-ansi --no-root
 
-COPY pipeline.py .
+COPY ingest_data.py .
 
-ENTRYPOINT ["python","pipeline.py","12"]
+ENTRYPOINT ["python","ingest_data.py"]
